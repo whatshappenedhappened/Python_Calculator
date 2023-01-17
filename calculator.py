@@ -1,3 +1,5 @@
+## 단축키 추가
+
 import tkinter
 
 screen = tkinter.Tk()
@@ -11,6 +13,7 @@ def input(val):
     global optFin
     calindex = 0
     if calcValue[1] : calindex = 2
+    print("val = ", val)
 
     if type(val) == str:                            ##### operator part
         if not calcValue[0] : calcValue[0] = '0'
@@ -48,10 +51,10 @@ def input(val):
             output_history.config(text=calcValue[:2])
             val = ''
 
-        elif val == '=':
+        elif val == '=' or val == 'Enter':
             total = ''
             if not calcValue[1]:
-                calcValue[1] = val
+                calcValue[1] = '='
                 output_history.config(text=calcValue[:2])
                 if calcValue[0] == '0': calindex = 0
             elif calcValue[1] == '=':
@@ -59,7 +62,7 @@ def input(val):
             elif not calcValue[2]:
                 calcValue[calindex] = calcValue[0]
                 calindex = 0
-                calcValue.append(val)
+                calcValue.append('=')
                 output_history.config(text=calcValue)
                 del calcValue[len(calcValue) - 1]
                 for value in calcValue:
@@ -80,7 +83,7 @@ def input(val):
                     output_history.config(height=1, font=('D2Coding', 15), text='')
                     calcValue[0] = 'Cannot divide by 0'
                 else:
-                    calcValue.append(val)
+                    calcValue.append('=')
                     output_history.config(text=(calcValue))
                     del calcValue[len(calcValue) - 1]
                     for value in calcValue:
@@ -93,7 +96,7 @@ def input(val):
                     optFin = 1
             val = ''
 
-        elif val == 'Back':
+        elif val == 'Back' or val == '\x08':
             if optFin == 1:
                 for i in range(len(calcValue)):
                     calcValue[i] = ''
@@ -117,7 +120,7 @@ def input(val):
             output_current.config(height=1, font = ('D2Coding', 30))
             output_history.config(height=1, font=('D2Coding', 15), text='')
 
-        elif val == 'CE':
+        elif val == 'CE' or val =='Delete':
             if optFin == 1:
                 for i in range(len(calcValue)):
                     calcValue[i] = ''
@@ -159,6 +162,15 @@ def input(val):
 
     print(calcValue)
 
+def ballocStr(strinput):
+    print(strinput)
+    if strinput.keycode == 46:
+        input('Delete')
+    else: input(strinput.char)
+
+def ballocInt(intinput):
+    input(int(intinput.char))
+
 
 #####           mapping             #####
 buttonmap = (('Back', 'C', 'CE', '%'),
@@ -177,10 +189,23 @@ crCount = 0
 
 for row in range(mapper_size_row):
     for col in range(mapper_size_col):
-        btn = tkinter.Button(screen, text='{}'.format(buttonmap[row][col]), height=2, width=8, bg='white', font=('D2Coding', '13'), command=lambda i = buttonmap[row][col]:input(i))
-        # if buttonmap[row][col] != 'CE' and buttonmap[row][col] != '-' :
-        #     screen.bind('<{}>'.format(buttonmap[row][col]), lambda i = buttonmap[row][col]: input(i))
-        # print(buttonmap[row][col])
+        btn = tkinter.Button(screen, text='{}'.format(buttonmap[row][col]),
+                             height=2, width=8, bg='white', font=('D2Coding', '13'), command=lambda i = buttonmap[row][col]:input(i))
+        if buttonmap[row][col] == 'CE':
+            screen.bind('<Delete>', ballocStr)
+        elif buttonmap[row][col] == 'Back':
+            screen.bind('<BackSpace>', ballocStr)
+        elif buttonmap[row][col] == '-':
+            screen.bind('minus', ballocStr)
+        elif buttonmap[row][col] == '-':
+            pass
+        elif type(buttonmap[row][col]) == int:
+            print("integer")
+            screen.bind(str(buttonmap[row][col]), ballocInt)
+        elif type(buttonmap[row][col])== str:
+            print("string")
+            screen.bind(str(buttonmap[row][col]), ballocStr)
+        print(buttonmap[row][col])
         btn.grid(row=row+2, column=col)
 
 
