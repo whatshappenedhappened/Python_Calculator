@@ -30,7 +30,7 @@ def outputResult(val):
     if not input.calcValue[2]: output_current.config(text=input.calcValue[0])
     else: output_current.config(text=input.calcValue[input.calindex])
 
-    print(input.calcValue)
+    print(*input.calcValue)
 
 def resetter():
     input.calcValue[0] = '0'
@@ -175,11 +175,16 @@ def operator(val):
             output_current.config(height=1, font=('D2Coding', 30))
         else:
             valSize = len(input.calcValue[input.calindex]) - 1
-            input.calcValue[input.calindex] = input.calcValue[input.calindex][:valSize]
+            if input.calcValue[input.calindex].find('e+') != -1:
+                input.calcValue[input.calindex] = str(float(input.calcValue[input.calindex]) / 10)
+            else: input.calcValue[input.calindex] = input.calcValue[input.calindex][:valSize]
+
 
         if input.calindex == 0 and input.calcValue[input.calindex] == '':
             input.calcValue[input.calindex] = '0'
         elif input.calindex == 2 and input.calcValue[2] == '':
+            input.calcValue[input.calindex] = '0'
+        elif input.calcValue[input.calindex] == 'Cannot divide by 0':
             input.calcValue[input.calindex] = '0'
 
     elif val == 'C':
