@@ -1,6 +1,7 @@
 ## 입력 제한 해재, 인덱스가 17이상이면 실수형태('ne+n') 형태로 출력하도록 변경 및 기타 예외처리 추가
 ## global 변수 static화
 ## 함수 세분화 진행, 정수파트, 연산자파트, 출력파트, 예외 처리로 분류
+## 무한대 예외처리 추가
 
 import tkinter
 
@@ -163,6 +164,13 @@ def operator(val):
             output_history.config(height=1, font=('D2Coding', 9))
 
     elif val == 'Back' or val == '\x08':
+        if input.calcValue[0].find('inf') != -1:
+            input.calcValue[0] = '0'
+            input.calcValue[1] = ''
+            input.calcValue[2] = ''
+            input.optFin = 0
+            output_current.config(height=1, font=('D2Coding', 30))
+            output_history.config(height=1, font=('D2Coding', 15), text='')
         if input.optFin == 1:
             temp = input.calcValue[0]
             for i in range(len(input.calcValue)):
